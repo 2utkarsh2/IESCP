@@ -1,0 +1,242 @@
+{% extends 'layout.html' %}
+{% block title %} Search Results {% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form class="form-inline" action="{{ url_for('search') }}" method="GET">
+                    <div class="input-group w-100">
+                        <input type="text" class="form-control" name="query" placeholder="Search..." aria-label="Search" value="{{ request.args.get('query', '') }}">
+                        <div class="input-group-append">
+
+                            {% if user.role == 'sponsor' %}
+                                <select class="custom-select", name="filter" id="filter">
+                                    <option value="influencer_name" {% if request.args.get('filter') == 'influencer_name' %}selected{% endif %}>Influencer Name</option>
+                                    <option value="influencer_niche" {% if request.args.get('filter') == 'influencer_niche' %}selected{% endif %}>Niche</option>
+                                    <option value="influencer_social" {% if request.args.get('filter') == 'influencer_social' %}selected{% endif %}>Social Media</option>
+                                </select>
+                            {% elif user.role == 'influencer' %}
+                                <select class="custom-select" name="filter" id="filter">
+                                    <option value="campaign_title" {% if request.args.get('filter') == 'campaign_title' %}selected{% endif %}>Campaign Title</option>
+                                    <option value="campaign_niche" {% if request.args.get('filter') == 'campaign_niche' %}selected{% endif %}>Niche</option>
+                                    <option value="campaign_budget" {% if request.args.get('filter') == 'campaign_budget' %}selected{% endif %}> Min Budget</option>
+                                </select>
+                            {% endif %}
+                            <button class="custom-select-button" type="submit">
+                                <i class="bi bi-search"></i>
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row mt-5">
+            {% if user.role == 'sponsor' %}
+                <h2 class="heading">Available Influencers</h2>
+                {% if influencers %}
+                    <div class="row">
+                        {% for influencer in influencers %}
+                            {% if not influencer.flag %}
+                            <div class="col-xl-3 col-sm-6 col-12">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div class="card-body">
+                                            <div class="media d-flex">
+                                                <div class="media-body">
+                                                    <h3>{{ influencer.name }}</h3>
+                                                    <p><b>Niche:</b> {{ influencer.niche | upper }}</p>
+                                                    <p><b>Social Media:</b> {{ influencer.socialnet | upper }}</p>
+                                                    <button type="button" class="btn btn-secondary btn-sm" onclick="window.location.href='{{ url_for('view_profile', user_id=influencer.id) }}'">View Profile</button>
+                                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#adRequestModal{{ influencer.id }}">Send Ad Request</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+        
+        
+                                <!-- Ad Request Modal for Sponsor -->
+                                <div class="modal fade" id="adRequestModal{{ influencer.id }}" tabindex="-1" aria-labelledby="adRequestModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="adRequestModalLabel">Send Ad Request to {{ influencer.name }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" action="{{ url_for('send_ad_request')}}">
+                                                    <input type="hidden" name="receiver_id" value="{{ influencer.id }}">
+                                                    <div class="mb-3">
+                                                        <label for="campaign_id" class="form-label">Campaign</label>
+                                                        <select class="form-select" id="campaign_id" name="campaign_id" required>
+                                                            <option value="">Select Campaign</option>
+                                                            {% for campaign in user.campaigns %}
+                                                            {% if not campaign.flag %}
+                                                            
+                                                                <option value="{{ campaign.id }}">{{ campaign.title }}</option>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="payment" class="form-label">Payment</label>
+                                                        <input type="number" class="form-control" id="payment" name="payment" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="message" class="form-label">Message</label>
+                                                        <textarea class="form-control" id="message" name="message" required></textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="requirements" class="form-label">Requirements</label>
+                                                        <textarea class="form-control" id="requirements" name="requirements" required></textarea>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Send Ad Request</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <h3 class='disappoint'>No influencers are available.</h3>
+                {% endif %}
+                {% elif user.role == 'influencer' %}
+                <h2 class="heading">Available Campaigns</h2>
+                {% if campaigns %}
+                    <div class="row">
+                        {% for campaign in campaigns %}
+                        {% if not campaign.flag %}
+                            <div class="col-xl-3 col-sm-6 col-12">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div class="card-body">
+                                            <div class="media d-flex">
+                                                <div class="media-body">
+                                                    <h3>{{ campaign.title }}</h3>
+                                                    <p><b>Budget: </b>{{ campaign.budget }}</p>
+                                                    <p><b>Start Date:</b> {{ campaign.start_date }}</p>
+                                                    <p><b>End Date: </b>{{ campaign.end_date }}</p>
+                                                    
+
+                                                    <a href="{{ url_for('view_campaign', campaign_id = campaign.id) }}" class="btn btn-info">View Details</a>
+                                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#adRequestModal{{ campaign.id }}">Send Ad Request</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+            
+                                <!-- Ad Request Modal for Influencer -->
+                                <div class="modal fade" id="adRequestModal{{ campaign.id }}" tabindex="-1" aria-labelledby="adRequestModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="adRequestModalLabel">Send Ad Request for {{ campaign.title }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" action="{{ url_for('send_ad_request')}}">
+                                                    <input type="hidden" name="receiver_id" value="{{ campaign.user_id }}">
+                                                    <input type="hidden" name="campaign_id" value="{{ campaign.id }}">
+                                                    <div class="mb-3">
+                                                        <label for="payment" class="form-label">Payment</label>
+                                                        <input type="number" class="form-control" id="payment" name="payment" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="message" class="form-label">Message</label>
+                                                        <textarea class="form-control" id="message" name="message" required></textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="requirements" class="form-label">Requirements</label>
+                                                        <textarea class="form-control" id="requirements" name="requirements" required></textarea>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Send Ad Request</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <h3 class='disappoint'>No campaigns are available.</h3>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block style %}
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    h2 {
+        margin-bottom: 20px;
+        text-align: center;
+        color: #444b52;
+    }
+    .disappoint {
+        margin-bottom: 10px;
+        text-align: left;
+        color: #be1111;
+        font-weight: bold;
+        transition: color 0.3s ease-in-out;
+    }
+    .heading {
+        margin-top: 20px;
+        margin-bottom: 30px;
+        text-align: center;
+        color: #0f8447;
+    }
+
+    .custom-select {
+        display: inline-block;
+        position: relative;
+        font-family: inherit;
+        margin-left: 8px;
+        border: none;
+        padding: 10px;
+        text-align: center;
+        border-radius: 4px;
+        background-color: #c9c7de;
+        transition: background-color 0.3s ease-in-out;
+    }
+    .custom-select-button {
+        display: inline-block;
+        position: relative;
+        font-family: inherit;
+        margin-left: 8px;
+        border: none;
+        padding: 10px;
+        text-align: center;
+        border-radius: 4px;
+        background-color: rgb(53, 107, 235);
+        transition: background-color 0.3s ease-in-out;
+    }
+    .card {
+        margin-top: 30px;
+    }
+</style>
+{% endblock %}

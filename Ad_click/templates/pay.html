@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+{% block title %}
+    Pay Request
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+<div class="container d-flex justify-content-center mt-5">
+    <div class="main-body">
+        <div class="row gutters-sm">
+            <div class="col-md-14">
+                <div class="card mb-5">
+                    <div class="card-body">
+                        <h1 class="text-center">Payment</h1>
+						<form method="POST" class="mt-5">
+							<div class="form-group">
+								<label for="payment">Payment Amount</label>
+								<input type="number" class="form-control" id="payment" name="payment" value="{{ request.payment }}" readonly>
+							</div>
+							<div class="form-group">
+								<label for="rating" class="form-label">Rating (0-5)</label>
+								<input type="number" class="form-control" id="rating" name="rating" min="0" max="5" required>
+							</div>
+							<div class="form-group">
+								<label for="review">Review</label>
+								<textarea class="form-control" id="review" name="review" rows="4" required></textarea>
+							</div>
+							<div class="d-flex justify-content-between px-3 pt-4 pb-3">
+								<div>
+                                    <span>
+                                        <a href="{{ url_for('profile')}}" class="btn btn-primary">Go back </a>
+                                    </span>
+                                    <span>
+										<button type="submit" class="btn btn-success">Submit Payment</button>
+                                    </span>
+                            </div>
+							
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+

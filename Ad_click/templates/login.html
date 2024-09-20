@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block content %}
+    <h1>Login</h1>
+    <form method="post" class="mt-5" >
+        <label for="role" class="form-label">Role: 
+                <select id="role", name="role" class="form-select" required>
+                    <option value="">Select Your Role</option>
+                    <option value="admin">Admin</option>
+                    <option value="influencer">Influencer</option>
+                    <option value="sponsor">Sponsor</option>
+                </select>
+        </label>
+        <label for="username" class="form-label">Username:
+            <input type="text" id="username" name="username" class="form-control" required/>
+        </label>
+        <label for="password" class="form-label">Password:
+            <input type="password" id="password" name="password" class="form-control" required minlength="8"/>
+        </label>
+
+        <button type="submit" class="btn btn-primary">Login</button>
+        <p>Not registered? <a href="register">Register here</a></p>
+    </form>
+{% endblock %}
+
+{% block style %}
+    <style>
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: background-color 0.3s ease-in-out;
+            overflow-y: auto;
+            overflow-x: hidden;
+            max-height: 60vh;
+        }
+        
+        form button {
+            margin-top: 10px;
+        }
+        h1 { 
+            margin-top: 100px;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+            color: #444b52;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            transition: color 0.3s ease-in-out;
+            letter-spacing: 1px;
+            text-decoration: none;
+            text-transform: uppercase;
+            background-color: transparent;
+            border: none;
+            color: #0a233c;
+            padding: 10px 20px;
+            border-radius: 5px;
+
+        }
+
+    </style>
+{% endblock %}

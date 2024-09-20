@@ -1,0 +1,260 @@
+{% extends 'layout.html' %}
+{% block title %}
+    Admin Dashboard
+{% endblock %}
+
+{% block content %}
+<!-- Link to Font Awesome for consistent icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="https://pixinvent.com/stack-responsive-bootstrap-4-admin-template/app-assets/fonts/simple-line-icons/style.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+
+
+<div class="container">
+    <div class="main-body">
+        <div class="row gutters-sm">
+            <div class="col-md-14 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-justified ">
+                            <div class="mt-3">
+                                <h1 class="text-primary text-center">Admin Dashboard</h1>
+                                <hr class="bold">
+                                <h4 class="text-success text-right"> Welcome @{{ user.username }}</h4>
+                            </div>
+
+                            <div class="main">
+                                <div class="row">
+                                    <div class="col-xl-3 col-sm-6 col-12">
+                                        <div class="card">
+                                            <a href="{{ url_for('admin_search', search_type='sponsors') }}">
+                                            <div class="card-content">
+                                                <div class="card-body">
+                                                    <div class="media d-flex">
+                                                        <div class="align-self-center">
+                                                            <i class="fas fa-user-tie primary font-large-2 float-left"></i>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h3>{{ total_sponsors }}</h3>
+                                                            <span>Sponsor</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-sm-6 col-12">
+                                        <div class="card">
+                                            <a href="{{ url_for('admin_search', search_type='influencers') }}">
+                                            <div class="card-content">
+                                                <div class="card-body">
+                                                    <div class="media d-flex">
+                                                        <div class="align-self-center">
+                                                            <i class="fas fa-users font-large-2 float-left"></i>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h3>{{ total_influencers }}</h3>
+                                                            <span>Influencer</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-sm-6 col-12">
+                                        <div class="card">
+                                            <div class="card-content">
+                                                <div class="card-body">
+                                                    <div class="media d-flex">
+                                                        <div class="align-self-center">
+                                                            <i class="fas fa-ad "></i>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h3>{{ total_adrequests }}</h3>
+                                                            <span>Ad-request</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-sm-6 col-12">
+                                        <div class="card">
+                                            <a href="{{ url_for('admin_search', search_type='campaigns') }}">
+                                            <div class="card-content">
+                                                <div class="card-body">
+                                                    <div class="media d-flex">
+                                                        <div class="align-self-center">
+                                                            <i class="fas fa-bullhorn font-large-2 float-left"></i>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <h3>{{ total_campaigns }}</h3>
+                                                            <span>Campaign</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="row chart-row">
+                        <div class="col-md-6 chart-container">
+                            <h5 class="chart-title">Campaign Budget Distribution</h5>
+                            <canvas id="campaignBudgetChart"></canvas>
+                        </div>
+                        <div class="col-md-5 chart-container">
+                            <h5 class="chart-title">Influencers associated with Social Media</h5>
+                            <canvas id="platformPieChart"></canvas>
+                        </div>
+                        <div class="col-md-6 chart-container">
+                            <h5 class="chart-title">User distribution across niches</h5>
+                            <canvas id="nicheBarChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <script>
+                        // Campaign Budget Bar Chart
+                        var ctx = document.getElementById('campaignBudgetChart').getContext('2d');
+                        var campaignBudgetChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: {{ campaign_titles|safe }},
+                                datasets: [{
+                                    label: 'Campaign Budget',
+                                    data: {{ campaign_budgets|safe }},
+                                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                    borderColor: 'rgba(54, 162, 235, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    
+                        // Social Media Platform Pie Chart
+                        var ctx2 = document.getElementById('platformPieChart').getContext('2d');
+                        var platformPieChart = new Chart(ctx2, {
+                            type: 'pie',
+                            data: {
+                                labels: {{ platform_labels|safe }},
+                                datasets: [{
+                                    data: {{ platform_data|safe }},
+                                    backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)'],
+                                    borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)'],
+                                    borderWidth: 1
+                                }]
+                            }
+                        });
+                    
+                        // Niche Horizontal Bar Chart
+                        var ctx3 = document.getElementById('nicheBarChart').getContext('2d');
+                        var nicheBarChart = new Chart(ctx3, {
+                            type: 'bar',
+                            data: {
+                                labels: {{ niche_labels|safe }},
+                                datasets: [{
+                                    label: 'Number of Users',
+                                    data: {{ niche_data|safe }},
+                                    backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                                    borderColor: 'rgba(153, 102, 255, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                indexAxis: 'y',
+                                scales: {
+                                    x: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    </script>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endblock %}
+{% block style %}
+    <style>
+        .bold {
+            border: 5px solid #15007b ; /* Adjust the width and color as needed */
+            margin: 20px 0; /* Optional: Adjusts the vertical spacing */
+        }
+        .bold-red {
+            border: 5px solid #ff0000 ; /* Adjust the width and color as needed */
+            margin: 20px 0; /* Optional: Adjusts the vertical spacing */
+        }
+        .main {
+        margin-top: 30px;
+        padding: 20px;
+        border-radius: 7px;
+        background-color: #f7fafb;
+        border: 1px solid #f7fafb;
+        width: 100%;
+    }
+    i{
+        font-size: 40px;
+        color: #00491d;
+    }
+    .card-content{
+        cursor: pointer;
+    }
+    .media-body {
+        text-align: right;
+        margin-left: auto; /* This ensures that the media-body takes up the remaining space */
+        font-size: large;
+        color: #0a466b;
+    }
+    .chart-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .chart-container {
+        padding: 15px;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        margin-bottom: 20px;
+        background-color: #f7f4fff4;
+        border-radius: 5px;
+    }
+    
+    .chart-title {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .col-md-6 {
+        width: 50%;
+        margin-top: 20px;
+        margin-left: 20px;
+    }
+    
+    .col-md-5 {
+        margin-top: 20px;
+        padding: 15px;
+        box-sizing: border-box;
+        margin-left: auto;
+        margin-right: 20px;
+    }
+    
+
+    </style>
+
+{% endblock %}

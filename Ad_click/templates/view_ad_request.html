@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+<div class="container mt-5">
+    <h1>Ad Request Details</h1>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title text-success"> For Campaign: {{ ad_request.campaign.title }}</h5>
+            {%if ad_request.sender.username == user.username%}
+            <p class="card-text">Sent to: {{ ad_request.receiver.name }}</p>
+            {%elif ad_request.receiver.username == user.username%}
+            <p class="card-text">Sent By: {{ ad_request.sender.name }}</p>
+            {% endif %}
+            <p class="card-text">Payment: ${{ ad_request.payment }}</p>
+            <p class="card-text">Message: {{ ad_request.message }}</p>
+            <p class="card-text">Requirements: {{ ad_request.requirements }}</p>
+            <p class="card-text">Status: {{ ad_request.status }}</p>
+            <a href="{{ url_for('profile') }}" class="btn btn-primary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{%block style %}
+    <style>
+        .container {
+            margin-top: 20px;
+            max-width: 800px;
+            
+        }
+    </style>
+{%endblock%}

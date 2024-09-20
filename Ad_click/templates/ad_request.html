@@ -1,0 +1,145 @@
+{% extends 'layout.html' %}
+{% block title %}
+{{campaign.title}}
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+
+<div class="container">
+  <div class="main-body">
+    <div class="row gutters-sm">
+      <div class="col-md-14">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h1>{{ campaign.title }}</h1>
+
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h5>Budget: {{ campaign.budget }}</h5>
+                <h4 class="text-muted">Visibility: {{ campaign.visibility }}</h4>
+              </div>
+              <div class="heading">
+                <a href="{{ url_for('view_campaign', campaign_id=campaign.id) }}" class="btn btn-info">View Campaign</a>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addAdRequestModal">+ Add Ad Request</button>
+              </div>
+            </div>
+
+            <!-- Add Ad Request Modal -->
+            <div class="modal fade" id="addAdRequestModal" tabindex="-1" aria-labelledby="addAdRequestModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="addAdRequestModalLabel">Add Ad Request</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="addAdRequestForm" method="post" action="{{ url_for('ad_request', campaign_id=campaign.id) }}">
+                      <div class="mb-3">
+                        <label for="payment" class="form-label">Payment</label>
+                        <input type="number" class="form-control" id="payment" name="payment" required>
+                        <small id="paymentHelp" class="form-text text-muted">Enter the payment in USD.</small>
+                      </div>
+                      <div class="mb-3">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" id="message" name="message" required></textarea>
+                      </div>
+                      <div class="mb-3">
+                        <label for="requirements" class="form-label">Requirements</label>
+                        <textarea class="form-control" id="requirements" name="requirements" required></textarea>
+                      </div>
+                      {% if user.role == 'sponsor' %}
+                      <div class="mb-3">
+                        <label for="receiver" class="form-label">Influencer</label>
+                        <select class="form-select" id="receiver" name="receiver_id" required>
+                          <option value="">Select Influencer</option>
+                          {% for influencer in influencers %}
+                          {% if not influencer.flag %}
+                          <option value="{{ influencer.id }}">{{ influencer.name }} - {{ influencer.niche | upper }}</option>
+                          {% endif %}
+                          {% endfor %}
+                        </select>
+                      </div>
+                      {% elif user.role == 'influencer' %}
+                      <div class="mb-3">
+                        <label for="campaign" class="form-label">Campaign</label>
+                        <select class="form-select" id="campaign" name="campaign_id" required>
+                          <option value="">Select Campaign</option>
+                          {% for campaign in campaigns %}
+                          <option value="{{ campaign.id }}">{{ campaign.title }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                      {% endif %}
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h4 class="text-muted mt-4">Your Ad Requests</h4>
+
+            {% if campaign.ad_requests %}
+            <table class="table table-sm mt-3">
+              <thead>
+                <tr>
+                  <th>Influencer</th>
+                  <th>Message</th>
+                  <th>Requirements</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for ad_request in campaign.ad_requests %}
+                {% if ad_request.sender.name == user.name %}
+                <tr>
+                  <td>{{ ad_request.receiver.name }}</td>
+                  <td>{{ ad_request.message }}</td>
+                  <td>{{ ad_request.requirements }}</td>
+                  <td>{{ ad_request.payment }}</td>
+                  <td>{{ ad_request.status }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p>No ad requests sent for this campaign.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+
+{% block style %}
+<style>
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        color: #064381;
+        text-decoration: none;
+
+        transition: color 0.3s ease-in-out;
+        letter-spacing: 1px;
+        background-color: transparent;
+        border: none;
+    } 
+    h5 { font-size:x-large;
+        text-align: center;
+        margin-top: 20px;
+        color: #14710d;
+        text-decoration: none;  
+        }
+   
+</style>
+{% endblock %}

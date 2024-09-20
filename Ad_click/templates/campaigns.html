@@ -1,0 +1,129 @@
+{% extends 'layout.html' %}
+{% block title %}
+    Your Campaigns
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+
+<div class="container">
+  <div class="main-body">
+    <div class="row gutters-sm">
+      <div class="col-md-14">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h1 class="text-center">Your Campaigns</h1>
+
+            <div class="heading d-flex justify-content-between align-items-center">
+              <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCampaignModal">+ Add Campaign</button>
+            </div>
+            {% if campaigns %}
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Budget</th>
+                        <th>Visibility</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for campaign in campaigns %}
+                        <tr {% if campaign.flag %}class="table-danger"{% endif %}>
+                            <td>{{ campaign.title }}</td>
+                            <td>{{ campaign.budget }}</td>
+                            <td>{{ campaign.visibility }}</td>
+                            <td>{{ campaign.start_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ campaign.end_date.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    
+                                    {%if not campaign.flag %}
+                                        <a href="{{ url_for('ad_request', campaign_id=campaign.id) }}" class="btn btn-info me-2">View</a>
+                                        <a href="{{ url_for('edit_campaign', campaign_id=campaign.id) }}" class="btn btn-warning me-2">Edit</a>
+                                        <form action="{{ url_for('delete_campaign', campaign_id=campaign.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this campaign?');" class="m-0">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-center mt-4">You have no campaigns yet. Click on "Add Campaign" to create one.</p>
+        {% endif %}
+    
+<!-- Modal -->
+<div class="modal fade" id="addCampaignModal" tabindex="-1" aria-labelledby="addCampaignModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addCampaignModalLabel">Add Campaign</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addCampaignForm" method="post" action="{{ url_for('add_campaign') }}">
+          <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+          </div>
+          <div class="mb-3">
+            <label for="budget" class="form-label">Budget</label>
+            <input type="number" class="form-control" id="budget" name="budget" required>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="start_date" class="form-label">Start Date</label>
+            <input type="date" class="form-control" id="start_date" name="start_date" required>
+          </div>
+          <div class="mb-3">
+            <label for="end_date" class="form-label">End Date</label>
+            <input type="date" class="form-control" id="end_date" name="end_date" required>
+          </div>
+          <div class="mb-3">
+            <label for="goals" class="form-label">Goals</label>
+            <textarea class="form-control" id="goals" name="goals" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="visibility" class="form-label">Visibility</label>
+            <select class="form-select" id="visibility" name="visibility" required>
+              <option value="Public">Public</option>
+              <option value="Private">Private</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block style %}
+<style>
+    .heading{
+        display: flex;
+        justify-content: space-between;
+        align-items: right;
+        margin-bottom: 20px;
+    }
+
+    h1 { 
+        
+        text-align: center;
+        margin-top: 20px;
+        color: #444b52;
+        text-decoration: none;
+    }  
+</style>
+{% endblock %}
+
+

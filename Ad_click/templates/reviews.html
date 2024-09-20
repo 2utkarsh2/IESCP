@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+<div class="container mt-5">
+        <h2 >Reviews you Received</h2>
+        <div class="row">
+            {% if reviews %}
+                {% for review in reviews %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Rating: {{ review.rating }}/5</h5>
+                                <p class="card-text"><strong>Review: </strong> {{ review.review }}</p>
+                                <hr>
+                                <p><strong>Campaign:</strong> {{ review.ad_request.campaign.title }}</p>
+                                <p><strong>Ad-request ID: </strong> {{ review.transaction_id}}</p>
+                                <p><strong>Payment:</strong> ${{ review.ad_request.payment }}</p>
+                                <p><strong>Sponsor:</strong> {{ review.rater.name }}</p>
+                                <p><small class="text-muted">Reviewed on {{ review.date.strftime('%Y-%m-%d') }}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <p class="text-center">No reviews yet.</p>
+                </div>
+            {% endif %}
+        </div>
+        <a href="{{ url_for('profile') }}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+
+{% endblock %}
+{% block style %}
+<style>
+    h2{
+        text-align: center;
+        margin-bottom: 30px;
+        color: #084b8e;
+
+    }
+</style>
+
+{% endblock %}

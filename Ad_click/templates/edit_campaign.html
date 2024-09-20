@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+{% block title %}
+    User Dashboard
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+<div class="container mt-5">
+    <h2>Edit Campaign Details</h2>
+    <form action="{{ url_for('edit_campaign', campaign_id=campaign.id) }}" method="POST">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ campaign.title }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="budget" class="form-label">Budget</label>
+            <input type="number" class="form-control" id="budget" name="budget" value="{{ campaign.budget }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" required>{{ campaign.description }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="start_date" class="form-label">Start Date</label>
+            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ campaign.start_date.strftime('%Y-%m-%d') }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="end_date" class="form-label">End Date</label>
+            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ campaign.end_date.strftime('%Y-%m-%d') }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="goals" class="form-label">Goals</label>
+            <textarea class="form-control" id="goals" name="goals" required>{{ campaign.goals }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="visibility" class="form-label">Visibility</label>
+            <select class="form-select" id="visibility" name="visibility" required>
+                <option value="Public" {% if campaign.visibility == 'Public' %}selected{% endif %}>Public</option>
+                <option value="Private" {% if campaign.visibility == 'Private' %}selected{% endif %}>Private</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Campaign</button>
+    </form>
+</div>
+{% endblock %}
+{%block style %}
+    <style>
+        .container {
+            margin-top: 20px;
+            max-width: 800px;
+            
+        }
+    </style>
+{%endblock%}

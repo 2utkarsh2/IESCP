@@ -1,0 +1,102 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Register Influencer
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+    <h1>You are registering as an Influencer</h1>
+
+    <form method="post" class="mt-5">
+        <label for="name" class="form-label">Your Name:
+            <input type="text" id="name" name="name" class="form-control" required/>
+        </label>
+        <label for="username" class="form-label">Username:
+            <input type="text" id="username" name="username" class="form-control" required/>
+        </label>
+        <label for="email" class="form-label">E-mail:
+            <input type="email" id="email" name="email" class="form-control" required/>
+        </label>
+        <label for="password" class="form-label">Password:
+            <input type="password" id="password" name="password" class="form-control" required minlength="8"/>
+        </label>
+        <label for="niche" class="form-label">Select your niche:
+            <select id="niche", name = 'niche' class="form-select" required>
+                <option value=""><b>Select Niche</b></option>
+                <option value="apparel">Apparel</option>
+                <option value="technology">Technology</option>
+                <option value="finance">Finance</option>
+                <option value="healthcare">Healthcare</option>
+                <option value="education">Education</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="real_estate">Real Estate</option>
+                <option value="automotive">Automotive</option>
+                <option value="food_beverage">Food & Beverage</option>
+                <option value="retail">Retail</option>
+                <option value="travel_tourism">Travel & Tourism</option>
+                <option value="energy">Energy</option>
+            </select>
+
+        <label for="socialnet" class="form-label">Select the platform on which you have the most reach:
+            <select id="socialnet" name="socialnet" class="form-select" required>
+                <option value=""><b>Select Platform</b></option>
+                <option value="instagram">Instagram</option>
+                <option value="youtube">YouTube</option>
+                <option value="x">X</option>
+                <option value="facebook">Facebook</option>
+                <option value="linkedin">LinkedIn</option>
+            </select>
+        </label>
+        
+            
+
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+{% endblock %}
+
+{% block style %}
+    <style>
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            max-width: 350px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: background-color 0.3s ease-in-out;
+            overflow-y: auto;
+            overflow-x: hidden;
+            max-height: 80vh;
+        }
+        
+        form button {
+            margin-top: 10px;
+        }
+        h1 { 
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+            color: #444b52;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            transition: color 0.3s ease-in-out;
+            letter-spacing: 1px;
+            text-decoration: none;
+            text-transform: uppercase;
+            background-color: transparent;
+            border: none;
+            color: #0a233c;
+            padding: 10px 20px;
+            border-radius: 5px;
+
+        }
+
+    </style>
+{% endblock %}

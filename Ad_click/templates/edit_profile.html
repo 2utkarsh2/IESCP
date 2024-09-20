@@ -1,0 +1,93 @@
+{%extends 'layout.html'%}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+
+<div class="container">
+    <div class="row">
+            <div class="col-20">
+                <!-- Page title -->
+                <div class="my-5">
+                    <h3>Edit Profile</h3>
+                    <hr>
+                </div>
+                <!-- Form START -->
+                <form class="file-upload" method="post" >
+                    <div class="row mb-5 gx-5">
+                        <!-- Contact detail -->
+                        <div class="col-xxl-8 mb-5 mb-xxl-0">
+                            <div class="bg-secondary-soft px-4 py-5 rounded">
+                                <div class="row g-3">
+                                    <h4 class="mb-4 mt-0">Contact detail</h4>
+                                    <!-- username -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">username</label>
+                                        <input type="text" class="form-control" placeholder="" name="username" required value = "{{user.username}}">
+                                    </div>
+                                    <!-- name -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Name </label>
+                                        <input type="text" class="form-control" placeholder="" name = 'name' required value="{{user.name}}">
+                                    </div>
+                                    <!-- Phone number -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Phone number </label>
+                                        <input type="text" class="form-control" placeholder="Enter Phone Number" name="mobile" maxlength="10" value="{{user.profile.mobile}}">
+                                    </div>
+                                    
+                                    <!-- Email -->
+                                    <div class="col-md-6">
+                                        <label for="inputEmail4" class="form-label">Email </label>
+                                        <input type="email" class="form-control" id="inputEmail4" name = 'email' required value="{{user.email}}">
+                                    </div>
+                                    <!-- Reach -->
+                                    <div class="col-md-6">
+                                        <label class="form-label"> Reach on {{user.socialnet | upper}} 📈</label>
+                                        <input type="text" class="form-control" placeholder="Followers on Social Media" name = "reach" value = "{{user.profile.reach}}">
+                                    </div>
+                                    
+                                    <!-- Bio -->
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label">Bio</label>
+                                        <textarea class="form-control" id="bio" name="bio" maxlength="69">{{user.profile.bio}}</textarea>
+                                    </div>
+                                </div> <!-- Row END -->
+                            </div>
+                            <div class="gap-3 d-md-flex justify-content-md-end text-center">
+                                <a href="{{ url_for('profile') }}" class="btn btn-danger btn-lg">Close</a>
+                                <button type="submit" class="btn btn-success btn-lg">Update profile</button>
+    
+                            </div>
+                        </div>
+                       
+                        
+                    </div> <!-- Row END -->
+                    <!-- button -->
+
+                </form> <!-- Form END -->
+            </div>
+        </div>
+        </div>
+    
+{% endblock %}
+{% block script %}
+<script>
+    function previewPhoto() {
+        const file = document.getElementById('photo').files[0];
+        const preview = document.getElementById('photo-preview');
+        const reader = new FileReader();
+
+        reader.onloadend = function() {
+            preview.src = reader.result;
+            preview.style.display = 'block';
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = '';
+            preview.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}
